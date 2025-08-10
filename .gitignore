@@ -1,0 +1,7 @@
+# Project exclude paths
+/data/
+/.idea/**
+poetry.lock
+poetry.toml
+/generated/**
+/embedding_dataset/**
