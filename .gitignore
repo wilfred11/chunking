@@ -5,3 +5,4 @@ poetry.lock
 poetry.toml
 /generated/**
 /embedding_dataset/**
+/sentence_transformer/**
