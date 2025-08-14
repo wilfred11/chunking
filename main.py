@@ -42,28 +42,8 @@ if do==3:
     datastore = Datastore()
     datastore.to_csv()
 
-if do==7:
-    with keep.running():
-        document_paths = get_files_in_directory(DEFAULT_SOURCE_PATH)
-        print(document_paths)
-        download_save_sentence_transformer()
-        #get_from_pkl()
-        datastore = Datastore()
-        datastore.reset()
-        indexer = Indexer()
-        items = indexer.index("ICSE.pdf")
-        print("max summary length")
-        print(indexer.get_max_length_summary())
-        print("max chunk length")
-        print(indexer.get_max_length_chunk())
-
-        datastore.add_items(items)
-
-
-
-if do==9:
-    datastore = Datastore()
-    datastore.head()
+if do==4:
+    """do vector search using questions"""
 
 if do==10:
     test()
