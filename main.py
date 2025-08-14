@@ -44,7 +44,7 @@ if do == 8:
     with keep.running():
         document_paths = get_files_in_directory(DEFAULT_SOURCE_PATH)
         generator = Generator(document_paths)
-        #generator.generate_summaries()
+        generator.generate_summaries()
         generator.generate_all_q_and_a()
         #test_connection()
         #summarize()

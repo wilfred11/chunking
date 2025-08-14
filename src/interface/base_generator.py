@@ -10,7 +10,7 @@ class BaseGenerator(ABC):
         pass
 
     @abstractmethod
-    def generate_summary(self, query:str, context: str)->str:
+    def generate_summary(self, context: str)->str:
         pass
 
     @abstractmethod

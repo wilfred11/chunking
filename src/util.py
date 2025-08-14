@@ -10,9 +10,11 @@ from pydantic import BaseModel
 from openai import OpenAI
 from sentence_transformers import SentenceTransformer
 
+
 class Record(BaseModel):
     question: str
     answer: str
+
 
 class Response(BaseModel):
     generated: List[Record]
@@ -29,54 +31,60 @@ def download_save_sentence_transformer():
     else:
         print("SentenceTransformer already saved locally.")
 
+
 def get_files_in_directory(source_path: str) -> List[str]:
     if os.path.isfile(source_path):
         return [source_path]
-    files_dirs=glob.glob(os.path.join(source_path, "*"))
-    files=[]
+    files_dirs = glob.glob(os.path.join(source_path, "*"))
+    files = []
     for f_d in files_dirs:
         if Path(f_d).is_file():
             files.append(f_d)
     return files
 
-def invoke_ai(system_message: str, user_message: str) -> str:
+
+def invoke_ai(system_message: str, context: str) -> str:
     """
     Generic function to invoke an AI model given a system and user message.
     Replace this if you want to use a different AI model.
     """
+    client = OpenAI(base_url="http://192.168.178.66:1234/v1", api_key="lm-studio")
+    response = client.chat.completions.create(
+        #model="o4-mini",
+        model="gemma-1.1-2b-it",
+        messages=[
+            {"role": "system", "content": system_message+context},
+        ],
+    )
+    return response.choices[0].message.content
+
+
+def invoke_ai_json(system_message: str, context: str) -> str:
+    """
+    Generic function to invoke an AI model given a system message and context. The OpenAI response is a json object.
+    """
+    print(system_message)
+    print(context)
+
     client = OpenAI(base_url="http://192.168.178.66:1234/v1", api_key="lm-studio")
 
     #client = OpenAI()  # Insert the API key here, or use env variable $OPENAI_API_KEY.
     response = client.chat.completions.create(
         #model="o4-mini",
         model="gemma-1.1-2b-it",
+        #response_format={"type": "json_object"},
+        response_format={
+            "type":"json_schema",
+            "json_schema":{
+                "name": "output_schema",
+                "schema": Record.model_json_schema()
+            }
+        },
         messages=[
-            {"role": "system", "content": system_message},
-            {"role": "user", "content": user_message},
+            {"role": "system", "content": system_message + context},
         ],
     )
     return response.choices[0].message.content
-
-
-def invoke_ai_json(system_message: str, user_message: str) -> str:
-    """
-    Generic function to invoke an AI model given a system and user message.
-    Replace this if you want to use a different AI model.
-    """
-    client = OpenAI(base_url="http://192.168.178.66:1234/v1", api_key="lm-studio")
-
-    #client = OpenAI()  # Insert the API key here, or use env variable $OPENAI_API_KEY.
-    response = client.chat.completions.create(
-        #model="o4-mini",
-        model="gemma-1.1-2b-it",
-        response_format={"type": "json_object"},
-        messages=[
-            {"role": "system", "content": system_message},
-            {"role": "user", "content": user_message},
-        ],
-    )
-    return response.choices[0].message.content
-
 
 
 """def invoke_ai_json(system_message: str, user_message: str) -> dict:
@@ -104,6 +112,7 @@ def invoke_ai_json(system_message: str, user_message: str) -> str:
             data += delta
     return json.loads(data)
 """
+
 
 def recursive_character_chunking(files):
     # need table extracting , camelot
@@ -134,9 +143,9 @@ def recursive_character_chunking(files):
 
             text_splitter_chunks = recursive_text_splitter.split_documents(pages)
             final_chunks = {}
-            count_m=0
+            count_m = 0
             for chunk in text_splitter_chunks:
-                count_m = count_m+1
+                count_m = count_m + 1
                 key = (file, count_m)
                 cleaned_chunk = chunk.page_content.replace("\n", "")
                 final_chunks[key] = cleaned_chunk

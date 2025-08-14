@@ -1,24 +1,25 @@
+import json
 import pickle
 from typing import List
 from src.interface.base_generator import BaseGenerator
 from src.util import invoke_ai, invoke_ai_json, recursive_character_chunking
 from unstructured_chunking import semchunk, semchunking
 
-#from src.util.invoke_ai import invoke_ai
-
-
 SYSTEM_PROMPT = """
 Use the provided context to provide a concise answer to the user's question.
 If you cannot find the answer in the context, say so. Do not make up information.
+Context:
 """
 
 SUMMARY_PROMPT = """
 "Summarize the following text in a commercial way. Focus on facts, ideas used. Add a fitting title to the summary. Be impersonal.
+Context:
 """
 
 QA_PROMPT = """
-Use the provided context to generate one question and matching answer. The question should ask something meaningful about the context. And the context should contain information to answer the question.
+You are a machine. Use the provided context to base one question and matching answer upon. The question should be content-related. And the context should contain information to answer the question.
  The question and its answer should be returned in json format. If no sensible question can be generated from the context, just return an empty json object.
+ Context:
 """
 
 
@@ -32,28 +33,36 @@ class Generator(BaseGenerator):
 
     def generate_all_q_and_a(self):
         all_qa={}
+        list_all_qa=[]
+
         for i,((file,chunk_number),v) in enumerate(self.final_chunks.items()):
+            print(v)
+            v=v.replace("\n","").replace('\r', '')
+            print("after replacing")
             print(v)
             qa=self.generate_q_and_a(v)
             print("qa")
             print(qa)
+            new_qa=json.loads(qa)
+            new_qa["file"]=file
+            new_qa["chunk_number"]=chunk_number
             all_qa[(file,chunk_number)]=qa
-            #if i == 5:
-            #    break
+            list_all_qa.append(new_qa)
 
+        #l_all_q_a = json.dumps(list_all_qa)
+        with open("data/out/eval/qas.json", "w") as final:
+            json.dump(list_all_qa, final)
         with open('data/out/pkl/qa_sl.pkl', 'wb') as f:
             pickle.dump(all_qa, f)
 
     def generate_summaries(self):
         summaries = {}
+        list_all_summaries = []
         for i,((file,chunk_number),v) in enumerate(self.final_chunks.items()):
             summary=self.generate_summary(v)
-            print("summary")
-            print(summary)
             print(len(summary))
             summaries[(file, chunk_number)]=summary
-            #if i == 1:
-            #    break
+        print(summaries)
         with open('data/out/pkl/chunk_summaries_sl.pkl', 'wb') as f:
             pickle.dump(summaries, f)
 
@@ -66,29 +75,12 @@ class Generator(BaseGenerator):
             f"<context>\n{context_text}\n</context>\n"
             f"<question>\n{query}\n</question>"
         )
-
-        return invoke_ai(system_message=SYSTEM_PROMPT, user_message=user_message)
+        return invoke_ai(system_message=SYSTEM_PROMPT, context=user_message)
 
     def generate_summary(self, context: str):
-        context_text = "\n".join(context)
-        user_message = (
-            f"<context>\n{context_text}\n</context>\n"
-        )
-        return invoke_ai(system_message=SUMMARY_PROMPT, user_message=user_message)
+        return invoke_ai(system_message=SUMMARY_PROMPT, context=context)
 
     def generate_q_and_a(self, context: str):
-        context_text = "\n".join(context)
-        user_message = (
-            f"<context>\n{context_text}\n</context>\n"
-        )
+        return invoke_ai_json(system_message=QA_PROMPT, context=context)
 
-        return invoke_ai_json(system_message=QA_PROMPT, user_message=user_message)
-
-    def generate_q_and_a1(self, context: str):
-        context_text = "\n".join(context)
-        user_message = (
-            f"<context>\n{context_text}\n</context>\n"
-        )
-
-        return invoke_ai_json(system_message=QA_PROMPT, user_message=user_message)
 
