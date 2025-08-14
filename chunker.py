@@ -3,16 +3,11 @@ from os.path import isfile, join
 from pathlib import Path
 import pyarrow as pa
 import pandas as pd
-from docling.datamodel.pipeline_options import PipelineOptions
-from docling_core.transforms.chunker.hybrid_chunker import HybridChunker
-from docling_core.types.doc import DocItemLabel
+
 from lancedb.embeddings import get_registry
 from lancedb.pydantic import LanceModel, Vector
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from docling.document_converter import DocumentConverter
-from docling_core.transforms.chunker import HierarchicalChunker, DocChunk
-from docling.chunking import HybridChunker
 #https://onlyoneaman.medium.com/i-tested-7-python-pdf-extractors-so-you-dont-have-to-2025-edition-c88013922257
 
 
@@ -38,7 +33,7 @@ def chunk():
         print(chunk.page_content + "\n")
 
 
-def hierarchical_chunk():
+"""def hierarchical_chunk():
     converter = DocumentConverter()
     chunker = HierarchicalChunker()
 
@@ -54,10 +49,10 @@ def hierarchical_chunk():
 
     for i, (text, context) in enumerate(zip(texts, contexts)):
         print(f"Chunk {i + 1}:\n{text}\n{'-' * 50}")
-        print(f"Context {i + 1}:\n{context}\n{'-' * 50}")
+        print(f"Context {i + 1}:\n{context}\n{'-' * 50}")"""
 
 
-def table_chunk():
+"""def table_chunk():
     output_dir = Path("generated")
     doc_converter = DocumentConverter()
     conv_res = doc_converter.convert(pdf_names[1])
@@ -76,10 +71,10 @@ def table_chunk():
         # Save the table as html
         element_html_filename = output_dir / f"{doc_filename}-table-{table_ix + 1}.html"
         with element_html_filename.open("w") as fp:
-            fp.write(table.export_to_html(doc=conv_res.document))
+            fp.write(table.export_to_html(doc=conv_res.document))"""
 
 
-def text_table_chunk():
+"""def text_table_chunk():
     output_dir_chunks = Path("data/out/generated/chunks")
     output_dir_tables = Path("data/out/generated/tables")
     #pipeline_options = PipelineOptions(do_table_structure=True)
@@ -129,9 +124,9 @@ def text_table_chunk():
                 print(it.get_ref())
                 table_list.append(it.get_ref())
 
-                """element_html_filename = output_dir_tables / f"{doc_filename}-table-{table_ix + 1}.html"
+                element_html_filename = output_dir_tables / f"{doc_filename}-table-{table_ix + 1}.html"
                 with element_html_filename.open("w") as fp:
-                    fp.write(chunk..export_to_html(doc=conv_res.document))"""
+                    fp.write(chunk..export_to_html(doc=conv_res.document))
 
                 print("chunk (w table)")
                 print(chunk.text[:200])
@@ -142,7 +137,7 @@ def text_table_chunk():
             #else:
             #    print("chunk (no table)")
             #    print(chunk.text[:200])
-    #    enriched_text = chunker.serialize(chunk=chunk)
+    #    enriched_text = chunker.serialize(chunk=chunk)"""
 
 
 

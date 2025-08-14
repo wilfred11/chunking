@@ -3,8 +3,6 @@ import pickle
 from typing import List
 from src.interface.base_datastore import DataItem
 from src.interface.base_indexer import BaseIndexer
-from docling.document_converter import DocumentConverter
-from docling.chunking import HybridChunker, DocChunk
 
 
 class Indexer(BaseIndexer):
@@ -26,6 +24,7 @@ class Indexer(BaseIndexer):
             items.append(item)
 
         return items
+
 
     def get_max_length_summary(self) -> int:
         if not self.chunks_length == None:

@@ -1,4 +1,9 @@
-## Chunking, lancedb
+## Chunking, lancedb, vector database
+
+https://medium.com/@saschametzger/what-are-tokens-vectors-and-embeddings-how-do-you-create-them-e2a3e698e037
+https://medium.com/axinc-ai/sentencetransformer-text-embeddings-model-4a7bac6c2cbf
+https://www.marqo.ai/course/introduction-to-sentence-transformers
+https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
 
 ### Chunking
 

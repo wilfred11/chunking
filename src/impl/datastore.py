@@ -1,5 +1,9 @@
 import os
 from typing import List
+
+import duckdb
+from pyarrow import UuidType
+
 from src.interface.base_datastore import BaseDatastore, DataItem
 import lancedb
 from lancedb.table import Table
@@ -12,13 +16,13 @@ from sentence_transformers import SentenceTransformer
 # Load the environment variables from .env file
 load_dotenv()
 
+
 #embedding_model = SentenceTransformer("nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True)
 # https://huggingface.co/thenlper/gte-large
 #embedding_model = SentenceTransformer("thenlper/gte-large")
 
 
 class Datastore(BaseDatastore):
-
     DB_PATH = "data/rag-lancedb"
     DB_TABLE_NAME = "rag-table"
 
@@ -42,9 +46,12 @@ class Datastore(BaseDatastore):
         # Create the new table.
         schema = pa.schema(
             [
-                pa.field("vector", pa.list_(pa.float32(), self.vector_dimensions)),
+                pa.field('id', pa.int32()),
+                pa.field("summary_vector", pa.list_(pa.float32(), self.vector_dimensions)),
                 pa.field("content", pa.utf8()),
                 pa.field("source", pa.utf8()),
+                pa.field("summary", pa.utf8()),
+                pa.field("numbering", pa.utf8()),
             ]
         )
 
@@ -74,18 +81,18 @@ class Datastore(BaseDatastore):
         embeddings = response.data[0].embedding
         return embeddings"""
 
-    def get_vector(self, content: str) -> List[float]:
+    def get_vector(self, summary: str) -> List[float]:
         #print(content)
         print("length content")
-        print(len(content))
-        if not content.strip():
+        print(len(summary))
+        if not summary.strip():
             print("Attempted to get embedding for empty text.")
             return []
 
-        embedding = self.emb_model.encode(content)
+        embedding = self.emb_model.encode(summary)
         #print(embedding.shape)
         #print(type(embedding))
-        l=embedding.tolist()
+        l = embedding.tolist()
         #print(type(l))
         return l
 
@@ -117,9 +124,9 @@ class Datastore(BaseDatastore):
             print(f"Error opening table. Try resetting the datastore: {e}")
             return self.reset()
 
-    def _get_sentence_transformer(self)->SentenceTransformer:
+    def _get_sentence_transformer(self) -> SentenceTransformer:
         try:
-            emb_model = SentenceTransformer("./"+os.environ.get("LOCAL_SENTENCE_TRANSFORMER"), trust_remote_code=True)
+            emb_model = SentenceTransformer("./" + os.environ.get("LOCAL_SENTENCE_TRANSFORMER"), trust_remote_code=True)
             print("emb_model loaded local")
             print("Sentence embedding")
             print(emb_model.get_sentence_embedding_dimension())
@@ -130,12 +137,28 @@ class Datastore(BaseDatastore):
             print(f"Error loading sentence transformer. {e}")
             return None
 
-
     def _convert_item_to_entry(self, item: DataItem) -> dict:
         """Convert a DataItem to match table schema."""
-        vector = self.get_vector(item.content)
+        summary_vector = self.get_vector(item.summary)
         return {
-            "vector": vector,
+            "id": item.id,
+            "summary_vector": summary_vector,
             "content": item.content,
             "source": item.source,
+            "summary": item.summary,
+            "numbering": item.numbering
         }
+
+    def describe_table(self):
+        print(self.vector_db.open_table(self.DB_TABLE_NAME).schema.to_string())
+
+    def get_number_of_records(self):
+        #self._get_table().query().where("number= '1.1'").limit(10).to_arrow()
+        #rag_table = self._get_table().to_lance()
+        self._get_table().to_pandas().head()
+        #duckdb.query("SELECT count FROM rag_table")
+
+    def head(self):
+        # self._get_table().query().where("number= '1.1'").limit(10).to_arrow()
+        # rag_table = self._get_table().to_lance()
+        print(self._get_table().to_pandas().head())

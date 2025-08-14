@@ -1,13 +1,16 @@
+import pandas as pd
 from abc import ABC, abstractmethod
 from typing import List
 from pydantic import BaseModel
 
 
 class DataItem(BaseModel):
+    id: int=1
     content: str = ""
     source: str = ""
     summary: str = ""
     numbering: str = ""
+    summary_vector: str = ""
 
 
 class BaseDatastore(ABC):
@@ -21,4 +24,20 @@ class BaseDatastore(ABC):
 
     @abstractmethod
     def search(self, query: str, top_k: int = 5) -> List[str]:
+        pass
+
+    @abstractmethod
+    def describe_table(self):
+        pass
+
+    @abstractmethod
+    def get_number_of_records(self)->int:
+        pass
+
+    @abstractmethod
+    def head(self):
+        pass
+
+    @abstractmethod
+    def as_panda(self) -> pd.DataFrame:
         pass

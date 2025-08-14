@@ -53,7 +53,7 @@ def summarize():
             messages=[
                 {
                     "role": "user",
-                    "content": "Summarize the following text in a technical way. Focus on facts, numbers and strategies used. Add a title to the summary. Be impersonal:\n\n{}".format(chunk)
+                    "content": "Summarize the following text in a commercial way. Focus on facts, ideas and numbers used. Add a fitting title to the summary. Be impersonal:\n\n{}".format(chunk)
                 }
             ],
             temperature=0.4,
