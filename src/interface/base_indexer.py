@@ -7,7 +7,7 @@ from src.interface.base_datastore import DataItem
 class BaseIndexer(ABC):
 
     @abstractmethod
-    def index(self, pdf_name: str) -> List[DataItem]:
+    def index(self) -> List[DataItem]:
         pass
 
     @abstractmethod

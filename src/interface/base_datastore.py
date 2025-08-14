@@ -11,6 +11,8 @@ class DataItem(BaseModel):
     summary: str = ""
     numbering: str = ""
     summary_vector: str = ""
+    question: str = ""
+    answer: str = ""
 
 
 class BaseDatastore(ABC):

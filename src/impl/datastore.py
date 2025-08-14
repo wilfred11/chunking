@@ -2,6 +2,7 @@ import os
 from typing import List
 
 import duckdb
+import pandas as pd
 from pyarrow import UuidType
 
 from src.interface.base_datastore import BaseDatastore, DataItem
@@ -52,6 +53,8 @@ class Datastore(BaseDatastore):
                 pa.field("source", pa.utf8()),
                 pa.field("summary", pa.utf8()),
                 pa.field("numbering", pa.utf8()),
+                pa.field("question", pa.utf8()),
+                pa.field("answer", pa.utf8())
             ]
         )
 
@@ -146,7 +149,9 @@ class Datastore(BaseDatastore):
             "content": item.content,
             "source": item.source,
             "summary": item.summary,
-            "numbering": item.numbering
+            "numbering": item.numbering,
+            "question": item.question,
+            "answer": item.answer
         }
 
     def describe_table(self):
@@ -162,3 +167,9 @@ class Datastore(BaseDatastore):
         # self._get_table().query().where("number= '1.1'").limit(10).to_arrow()
         # rag_table = self._get_table().to_lance()
         print(self._get_table().to_pandas().head())
+
+    def as_panda(self) -> pd.DataFrame:
+        return self._get_table().to_pandas()
+
+    def to_csv(self):
+        return self._get_table().to_pandas().to_csv("data/out/datastore/all_data.csv")

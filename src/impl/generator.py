@@ -50,9 +50,9 @@ class Generator(BaseGenerator):
             list_all_qa.append(new_qa)
 
         #l_all_q_a = json.dumps(list_all_qa)
-        with open("data/out/eval/qas.json", "w") as final:
-            json.dump(list_all_qa, final)
-        with open('data/out/pkl/qa_sl.pkl', 'wb') as f:
+        with open("data/out/eval/qas.json", "w") as f:
+            json.dump(list_all_qa, f)
+        with open('data/out/pkl/qa_sl.pkl', 'w') as f:
             pickle.dump(all_qa, f)
 
     def generate_summaries(self):
@@ -63,7 +63,7 @@ class Generator(BaseGenerator):
             print(len(summary))
             summaries[(file, chunk_number)]=summary
         print(summaries)
-        with open('data/out/pkl/chunk_summaries_sl.pkl', 'wb') as f:
+        with open('data/out/pkl/chunk_summaries_sl.pkl', 'w') as f:
             pickle.dump(summaries, f)
 
 

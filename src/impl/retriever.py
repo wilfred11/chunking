@@ -2,7 +2,6 @@ from src.interface.base_datastore import BaseDatastore
 from src.interface.base_retriever import BaseRetriever
 import cohere
 
-
 class Retriever(BaseRetriever):
     def __init__(self, datastore: BaseDatastore):
         self.datastore = datastore
