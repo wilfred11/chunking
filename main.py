@@ -43,7 +43,7 @@ if do==3:
     datastore.to_csv()
 
 if do==4:
-    """do vector search using questions"""
+    """do vector search using questions, rerank"""
 
 if do==10:
     test()
