@@ -8,9 +8,8 @@ from summarize import test_connection, summarize, get_from_pkl
 from unstructured_chunking import recursive_character_chunking, test
 from vector import embed, get_annotations, get_embedding_model, Schema, process_dataset, create_vector_db
 
-do=8
+do = 8
 DEFAULT_SOURCE_PATH = "data/pdfs/"
-
 
 #https://www.youtube.com/watch?v=V58mPkLB95o
 #https://python.langchain.com/docs/integrations/document_loaders/docling/
@@ -33,7 +32,7 @@ if do==4:
 if do==5:
     text_table_chunk()"""
 
-if do==1:
+if do == 1:
     with keep.running():
         document_paths = get_files_in_directory(DEFAULT_SOURCE_PATH)
 
@@ -41,16 +40,16 @@ if do==1:
         generator = Generator(document_paths)
         generator.generate_all_q_and_a()
 
-if do==8:
+if do == 8:
     with keep.running():
         document_paths = get_files_in_directory(DEFAULT_SOURCE_PATH)
         generator = Generator(document_paths)
-        #generator.generate_summaries()
+        generator.generate_summaries()
         generator.generate_all_q_and_a()
         #test_connection()
         #summarize()
 
-if do==7:
+if do == 7:
     with keep.running():
         document_paths = get_files_in_directory(DEFAULT_SOURCE_PATH)
         print(document_paths)
@@ -67,7 +66,7 @@ if do==7:
 
         datastore.add_items(items)
 
-if do==6:
+if do == 6:
     datastore = Datastore()
     datastore.reset()
     datastore.describe_table()
@@ -75,21 +74,9 @@ if do==6:
     items = indexer.index("ICSE.pdf")
     datastore.add_items(items)
 
-if do==9:
+if do == 9:
     datastore = Datastore()
     datastore.head()
 
-if do==10:
+if do == 10:
     test()
-
-
-
-
-
-
-
-
-
-
-
-

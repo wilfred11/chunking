@@ -6,13 +6,13 @@ authors = ["wilfred11 <wilfredvancasteren@hotmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.12.8"
 langchain = "^0.3.27"
 langchain-community = "^0.3.27"
 pypdf = "^5.9.0"
 pathlib = "^1.0.1"
 pandas = "^2.3.1"
-lancedb = "^0.24.2"
+lancedb = "==0.24.2"
 sentence-transformers = "^5.1.0"
 matplotlib = "^3.10.5"
 unstructured = "^0.18.11"
