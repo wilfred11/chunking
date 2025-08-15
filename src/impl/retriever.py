@@ -14,9 +14,8 @@ class Retriever(BaseRetriever):
 
     def search(self, query: str, top_k: int = 3) -> list[str]:
         search_results = self.datastore.search(query, top_k=top_k)
-        result_content = [d["content"] for d in search_results]
-        reranked_results = self._rerank(query, search_results, top_k=top_k)
-        return reranked_results
+        #reranked_results = self._rerank(query, search_results, top_k=top_k)
+        return search_results
 
     def _rerank(
         self, query: str, search_results: list[dict], top_k: int = 10

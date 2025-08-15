@@ -12,12 +12,6 @@ Some flaws still to tackle:
 - also the llm should decide whether the answer is to be considered to be the correct answer to the question
 - the code still needs some attention
 
-https://medium.com/@saschametzger/what-are-tokens-vectors-and-embeddings-how-do-you-create-them-e2a3e698e037
-https://medium.com/axinc-ai/sentencetransformer-text-embeddings-model-4a7bac6c2cbf
-https://www.marqo.ai/course/introduction-to-sentence-transformers
-https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
-
-
 ### Chunking
 
 In this project I am using semchunk to convert a some relatively simple PDFs into text chunks. 

@@ -75,8 +75,6 @@ class Datastore(BaseDatastore):
             .limit(top_k)
             .to_list()
         )
-        print("distance")
-        print(results[0].get("_distance"))
         return results
 
     def _get_table(self) -> Table:
