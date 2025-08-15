@@ -197,5 +197,8 @@ def _rerank(
     return [search_results[i] for i in result_indices]
 ```
 
-
 As there are multiple ways to do index searching, it would be interesting to adapt the vector search based on the cohere results.
+
+### LM studio
+
+LM studio is a good application to serve an LLM locally. 
