@@ -73,13 +73,13 @@ class Evaluator(BaseEvaluator):
         search_results = self.retriever.search(query)
         print(f"✅ Found {len(search_results)} results for query: {query}\n")
 
-        query_result = pd.DataFrame(columns=['eval','q_number','question', 'source', 'chunk_number'])
-        data = {'eval':'correct','q_number': q_number, 'question': query,'source': source, 'chunk_number': chunk_number}
+        query_result = pd.DataFrame(columns=['eval','q_number','question', 'source', 'chunk_number', 'distance'])
+        data = {'eval':'correct','q_number': q_number, 'question': query,'source': source, 'chunk_number': chunk_number, 'distance':0}
         row = pd.DataFrame(data, index=[0])
         query_result = pd.concat([query_result, row])
 
         for d in search_results:
-            data = {'eval': 'suggestion','q_number':q_number, 'question':query,'source':d['source'], 'chunk_number':d["number"]}
+            data = {'eval': 'suggestion','q_number':q_number, 'question':query,'source':d['source'], 'chunk_number':d["number"], 'distance': d['_distance']}
             row=pd.DataFrame(data, index=[0])
             query_result=pd.concat([query_result, row])
 

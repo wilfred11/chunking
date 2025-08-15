@@ -151,7 +151,8 @@ def get_vector(self, summary: str) -> List[float]:
     return l
 ```
 
-Whenever a question needs the appropriate chunks, the question can be vectorized using the get_vector method, after it will be used in a query like below.
+Whenever a question needs the appropriate chunk, the question can be vectorized using the get_vector method, after it will be used in a query like below.
+This code return some number of chunks (content, summary, question, number, source pdf).
 
 ```
 def search(self, query: str, top_k: int = 5) -> list[dict]:
@@ -165,4 +166,10 @@ def search(self, query: str, top_k: int = 5) -> list[dict]:
         return results
 ```
 
+The result of this query can be seen in this table.
+
+![datastore_results_2.png](data/out/eval/datastore_results_2.png)
+
+One can also see that all of the results of the vector search are in the right pdf, but only one search result has the correct chunk number. But this result is the furthest away. 
+The distance says something about the semantic distance between the correct vectorized summary and the vectorized question.
 
