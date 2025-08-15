@@ -181,9 +181,27 @@ The distance says something about the semantic distance between the correct vect
 The idea behind reranking is to use an LLM to see which chunk is the best chunk to answer the question.
 
 So after getting back chunks to answer the question, an LLM sorts the chunks on relevance to answer the question.  
-A simple way to do this is through an existing reranking service.
+A simple way to do this is through an existing reranking service like cohere (not entirely free).
+The reranked document(s) can then be passed on to the LMM to answer the question.
+
+```
+def _rerank(
+    self, query: str, search_results: list[dict], top_k: int = 10
+) -> list[dict]:
+    result_content = [d["content"] for d in search_results]
+
+    co = cohere.ClientV2(api_key=cohere_key)
+    response = co.rerank(
+        model="rerank-v3.5",
+        query=query,
+        documents=result_content,
+        top_n=top_k,
+    )
+
+    result_indices = [result.index for result in response.results]
+    print(f"✅ Reranked Indices: {result_indices}")
+    return [search_results[i] for i in result_indices]
+```
 
 
-
-
-As there are multiple ways to do index searching
+As there are multiple ways to do index searching, it would be interesting to adapt the vector search based on the cohere results.

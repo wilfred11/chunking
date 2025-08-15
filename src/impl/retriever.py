@@ -32,5 +32,5 @@ class Retriever(BaseRetriever):
         )
 
         result_indices = [result.index for result in response.results]
-        print(f"✅ Reranked Indices: {result_indices}")
+        print(f"Reranked Indices: {result_indices}")
         return [search_results[i] for i in result_indices]
