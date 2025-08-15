@@ -64,16 +64,9 @@ def invoke_ai_json(system_message: str, context: str) -> str:
     """
     Generic function to invoke an AI model given a system message and context. The OpenAI response is a json object.
     """
-    print(system_message)
-    print(context)
-
     client = OpenAI(base_url="http://192.168.178.66:1234/v1", api_key="lm-studio")
-
-    #client = OpenAI()  # Insert the API key here, or use env variable $OPENAI_API_KEY.
     response = client.chat.completions.create(
-        #model="o4-mini",
         model="gemma-1.1-2b-it",
-        #response_format={"type": "json_object"},
         response_format={
             "type":"json_schema",
             "json_schema":{

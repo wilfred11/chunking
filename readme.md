@@ -67,6 +67,47 @@ Context:
 
 As I am running my LLM locally I am using a simple LLM, a call to this LLM takes several minutes.
 
+### Generate Q&As
+
+To generate a question and an answer for every chunk, I have forced the call to the LLM to return json.
+First I define the pydantic object.
+
+```
+class Record(BaseModel):
+    question: str
+    answer: str
+```
+
+The object will be converted to model_json_schema() in the following piece of code.
+
+```
+def invoke_ai_json(system_message: str, context: str) -> str:
+    """
+    Generic function to invoke an AI model given a system message and context. The OpenAI response is a json object.
+    """
+    client = OpenAI(base_url="http://192.168.178.66:1234/v1", api_key="lm-studio")
+    response = client.chat.completions.create(
+        model="gemma-1.1-2b-it",
+        response_format={
+            "type":"json_schema",
+            "json_schema":{
+                "name": "output_schema",
+                "schema": Record.model_json_schema()
+            }
+        },
+        messages=[
+            {"role": "system", "content": system_message + context},
+        ],
+    )
+    return response.choices[0].message.content
+```
+
+The returned json looks like this.
+
+```
+{"question": "What was the most significant factor contributing to the downfall of Swan Lagoon?", "answer": "The decline in gold yields by the early 1920s."}
+```
+
 ### LanceDB
 
 LanceDB is an embedded database that persists vectorial and non-vectorial data. In another context this could just as well be a more globally available service. 

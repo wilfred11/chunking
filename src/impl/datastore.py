@@ -14,34 +14,24 @@ from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 
-# Load the environment variables from .env file
 load_dotenv()
-
-
-#embedding_model = SentenceTransformer("nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True)
-# https://huggingface.co/thenlper/gte-large
-#embedding_model = SentenceTransformer("thenlper/gte-large")
-
 
 class Datastore(BaseDatastore):
     DB_PATH = "data/rag-lancedb"
     DB_TABLE_NAME = "rag-table"
 
     def __init__(self):
-        #self.vector_dimensions = 1536
         self.vector_dimensions = 1024
         self.emb_model: SentenceTransformer = self._get_sentence_transformer()
         self.vector_db = lancedb.connect(self.DB_PATH)
         self.table: Table = self._get_table()
 
     def reset(self) -> Table:
-        # Drop the table if it exists
         try:
             self.vector_db.drop_table(self.DB_TABLE_NAME)
         except Exception as e:
             print("Unable to drop table. Assuming it doesn't exist.")
 
-        # Create the new table.
         schema = pa.schema(
             [
                 pa.field('id', pa.int32()),
@@ -61,15 +51,12 @@ class Datastore(BaseDatastore):
         return self.table
 
     def get_vector(self, summary: str) -> List[float]:
-        print("length summary")
-        print(len(summary))
         if not summary.strip():
             print("Attempted to get embedding for empty text.")
             return []
 
         embedding = self.emb_model.encode(summary)
         l = embedding.tolist()
-        #print(type(l))
         return l
 
     def add_items(self, items: List[DataItem]) -> None:

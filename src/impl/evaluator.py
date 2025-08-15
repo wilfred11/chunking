@@ -79,7 +79,7 @@ class Evaluator(BaseEvaluator):
         query_result = pd.concat([query_result, row])
 
         for d in search_results:
-            data = {'eval': 'suggestion','q_number':q_number, 'question':query,'source':d['source'], 'number':d["number"]}
+            data = {'eval': 'suggestion','q_number':q_number, 'question':query,'source':d['source'], 'chunk_number':d["number"]}
             row=pd.DataFrame(data, index=[0])
             query_result=pd.concat([query_result, row])
 
