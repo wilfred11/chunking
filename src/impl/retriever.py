@@ -1,6 +1,12 @@
+import os
+from dotenv import load_dotenv
 from src.interface.base_datastore import BaseDatastore
 from src.interface.base_retriever import BaseRetriever
 import cohere
+
+load_dotenv()
+
+cohere_key= os.environ.get("LMSTUDIO_KEY")
 
 class Retriever(BaseRetriever):
     def __init__(self, datastore: BaseDatastore):
@@ -8,20 +14,20 @@ class Retriever(BaseRetriever):
 
     def search(self, query: str, top_k: int = 3) -> list[str]:
         search_results = self.datastore.search(query, top_k=top_k)
-        result_summary = [d["summary"] for d in search_results]
-        #return result_content
-        #reranked_results = self._rerank(query, result_summary, top_k=top_k)
+        result_content = [d["content"] for d in search_results]
+        #reranked_results = self._rerank(query, result_content, top_k=top_k)
         return search_results
 
     def _rerank(
-        self, query: str, search_results: list[str], top_k: int = 10
+        self, query: str, search_results: list[dict], top_k: int = 10
     ) -> list[str]:
+        result_content = [d["content"] for d in search_results]
 
-        co = cohere.ClientV2(api_key="TyYTOH2jxPFzv9Cea6zK9BokqniTOJNuhWFlLcIa")
+        co = cohere.ClientV2(api_key=cohere_key)
         response = co.rerank(
             model="rerank-v3.5",
             query=query,
-            documents=search_results,
+            documents=result_content,
             top_n=top_k,
         )
 
