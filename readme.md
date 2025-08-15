@@ -176,3 +176,14 @@ The result of this query can be seen in this table.
 One can also see that all of the results of the vector search are in the right pdf, but only one search result has the correct chunk number. But this result is the furthest away. 
 The distance says something about the semantic distance between the correct vectorized summary and the vectorized question.
 
+#### Reranking
+
+The idea behind reranking is to use an LLM to see which chunk is the best chunk to answer the question.
+
+So after getting back chunks to answer the question, an LLM sorts the chunks on relevance to answer the question.  
+A simple way to do this is through an existing reranking service.
+
+
+
+
+As there are multiple ways to do index searching
