@@ -8,6 +8,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pydantic import BaseModel
 from openai import OpenAI
+from semchunk import semchunk
 from sentence_transformers import SentenceTransformer
 
 
@@ -136,4 +137,25 @@ def recursive_character_chunking(files):
                 print(key)
 
     with open('data/out/pkl/final_chunks.pkl', 'wb') as f:
+        pickle.dump(final_chunks, f)
+
+
+def semchunking(files):
+    final_chunks={}
+    for file in files:
+        print(file)
+        loader = PyPDFLoader(file, mode="single")
+        pages = [page.page_content for page in loader.load()]
+
+        chunker = semchunk.chunkerify('cl100k_base', 256)
+        chunks=chunker(pages[0].replace("\n",""))
+        chunk_number = 1
+        for c in chunks:
+            #print(c)
+            print(len(c))
+            key = (file, chunk_number)
+            final_chunks[key] = c
+            chunk_number=chunk_number+1
+
+    with open('data/out/pkl/final_chunks_sl.pkl', 'wb') as f:
         pickle.dump(final_chunks, f)

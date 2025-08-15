@@ -8,15 +8,10 @@ from src.impl.evaluator import Evaluator
 from src.impl.indexer import Indexer
 from src.util import download_save_sentence_transformer, get_files_in_directory
 from summarize import test_connection, summarize, get_from_pkl
-from unstructured_chunking import recursive_character_chunking, test
-from vector import embed, get_annotations, get_embedding_model, Schema, process_dataset, create_vector_db
 
 
 do=4
 DEFAULT_SOURCE_PATH = "data/pdfs/"
-
-#https://www.youtube.com/watch?v=V58mPkLB95o
-#https://python.langchain.com/docs/integrations/document_loaders/docling/
 
 if do==1:
     "Generate chunks, summaries and questions and answers."
@@ -47,6 +42,7 @@ if do==3:
     datastore.to_csv()
 
 if do==4:
+    "Get most fitting chunks for every question"
     with open("data/out/eval/qas.json", "r") as file:
         qas = json.load(file)
 
@@ -59,10 +55,6 @@ if do==4:
     retriever = Retriever(datastore=datastore)
     evaluator = Evaluator(retriever=retriever, q_and_as=qas)
     evaluator.evaluate()
-
-
-if do==10:
-    test()
 
 
 

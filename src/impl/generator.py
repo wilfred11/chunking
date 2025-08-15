@@ -2,8 +2,7 @@ import json
 import pickle
 from typing import List
 from src.interface.base_generator import BaseGenerator
-from src.util import invoke_ai, invoke_ai_json, recursive_character_chunking
-from unstructured_chunking import semchunk, semchunking
+from src.util import invoke_ai, invoke_ai_json, semchunking
 
 SYSTEM_PROMPT = """
 Use the provided context to provide a concise answer to the user's question.
