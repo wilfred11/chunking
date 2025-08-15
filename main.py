@@ -10,7 +10,7 @@ from src.util import download_save_sentence_transformer, get_files_in_directory
 from summarize import test_connection, summarize, get_from_pkl
 
 
-do=5
+do=4
 DEFAULT_SOURCE_PATH = "data/pdfs/"
 
 if do==1:

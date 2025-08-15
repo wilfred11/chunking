@@ -6,7 +6,7 @@ import cohere
 
 load_dotenv()
 
-cohere_key= os.environ.get("LMSTUDIO_KEY")
+cohere_key= os.environ.get("COHERE_KEY")
 
 class Retriever(BaseRetriever):
     def __init__(self, datastore: BaseDatastore):
