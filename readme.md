@@ -83,7 +83,8 @@ The object will be converted to model_json_schema() in the following piece of co
 ```
 def invoke_ai_json(system_message: str, context: str) -> str:
     """
-    Generic function to invoke an AI model given a system message and context. The OpenAI response is a json object.
+    Generic function to invoke an AI model given a system message and context. 
+    The OpenAI response is a json object.
     """
     client = OpenAI(base_url="http://192.168.178.66:1234/v1", api_key="lm-studio")
     response = client.chat.completions.create(
@@ -105,7 +106,8 @@ def invoke_ai_json(system_message: str, context: str) -> str:
 The returned json looks like this.
 
 ```
-{"question": "What was the most significant factor contributing to the downfall of Swan Lagoon?", "answer": "The decline in gold yields by the early 1920s."}
+{"question": "What was the most significant factor contributing to the downfall of Swan Lagoon?",
+ "answer": "The decline in gold yields by the early 1920s."}
 ```
 
 ### LanceDB
