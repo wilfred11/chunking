@@ -10,7 +10,7 @@ from src.util import download_save_sentence_transformer, get_files_in_directory
 from summarize import test_connection, summarize, get_from_pkl
 
 
-do=4
+do=5
 DEFAULT_SOURCE_PATH = "data/pdfs/"
 
 if do==1:
@@ -55,6 +55,10 @@ if do==4:
     retriever = Retriever(datastore=datastore)
     evaluator = Evaluator(retriever=retriever, q_and_as=qas)
     evaluator.evaluate()
+
+if do==5:
+    datastore = Datastore()
+    print(datastore.get_number_of_records())
 
 
 

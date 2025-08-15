@@ -119,15 +119,12 @@ class Datastore(BaseDatastore):
     def describe_table(self):
         print(self.vector_db.open_table(self.DB_TABLE_NAME).schema.to_string())
 
-    def get_number_of_records(self):
-        #self._get_table().query().where("number= '1.1'").limit(10).to_arrow()
-        #rag_table = self._get_table().to_lance()
-        self._get_table().to_pandas().head()
-        #duckdb.query("SELECT count FROM rag_table")
+    def get_number_of_records(self) -> int:
+        arrow_table = self._get_table().to_lance()
+        count=duckdb.query("select count(id) FROM arrow_table")
+        return count
 
     def head(self):
-        # self._get_table().query().where("number= '1.1'").limit(10).to_arrow()
-        # rag_table = self._get_table().to_lance()
         print(self._get_table().to_pandas().head())
 
     def as_panda(self) -> pd.DataFrame:

@@ -32,6 +32,7 @@ duckdb = "^1.3.2"
 advanced-chunker = "^0.1.4"
 semchunk = "^3.2.3"
 cohere = "^5.17.0"
+pylance = "^0.33.0"
 
 
 [build-system]
