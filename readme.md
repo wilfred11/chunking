@@ -103,7 +103,7 @@ def invoke_ai_json(system_message: str, context: str) -> str:
     return response.choices[0].message.content
 ```
 
-The returned json looks like this.
+The returned json looks like this for some chunk.
 
 ```
 {"question": "What was the most significant factor contributing to the downfall of Swan Lagoon?",
@@ -149,6 +149,20 @@ def get_vector(self, summary: str) -> List[float]:
     embedding = self.emb_model.encode(summary)
     l = embedding.tolist()
     return l
+```
+
+Whenever a question needs the appropriate chunks, the question can be vectorized using the get_vector method, after it will be used in a query like below.
+
+```
+def search(self, query: str, top_k: int = 5) -> list[dict]:
+    vector = self.get_vector(query)
+        results = (
+            self.table.search(vector)
+            .select(["summary", "content","source", "question", "number"])
+            .limit(top_k)
+            .to_list()
+        )
+        return results
 ```
 
 
