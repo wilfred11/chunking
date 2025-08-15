@@ -11,6 +11,9 @@ from openai import OpenAI
 from semchunk import semchunk
 from sentence_transformers import SentenceTransformer
 
+llm_url= os.environ.get("LMSTUDIO_URL")
+llm_api_key= os.environ.get("LMSTUDIO_KEY")
+
 
 class Record(BaseModel):
     question: str
@@ -49,7 +52,7 @@ def invoke_ai(system_message: str, context: str) -> str:
     Generic function to invoke an AI model given a system and user message.
     Replace this if you want to use a different AI model.
     """
-    client = OpenAI(base_url="http://192.168.178.66:1234/v1", api_key="lm-studio")
+    client = OpenAI(base_url=llm_url, api_key=llm_api_key)
     response = client.chat.completions.create(
         #model="o4-mini",
         model="gemma-1.1-2b-it",
@@ -64,7 +67,7 @@ def invoke_ai_json(system_message: str, context: str) -> str:
     """
     Generic function to invoke an AI model given a system message and context. The OpenAI response is a json object.
     """
-    client = OpenAI(base_url="http://192.168.178.66:1234/v1", api_key="lm-studio")
+    client = OpenAI(base_url=llm_url, api_key=llm_api_key)
     response = client.chat.completions.create(
         model="gemma-1.1-2b-it",
         response_format={
@@ -90,47 +93,6 @@ def process_query(self, query: str) -> str:
 
     response = self.response_generator.generate_response(query, search_results)
     return response
-
-def recursive_character_chunking(files):
-    # need table extracting , camelot
-
-    for file in files:
-        if Path(file).is_file():
-            loader = PyPDFLoader(file_path=file, mode="single")
-            pages = loader.load()
-
-            recursive_text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-                encoding_name="cl100k_base",
-                chunk_size=384,
-                chunk_overlap=0,
-                separators=[
-                    "\n\n",
-                    "\n",
-                    " ",
-                    ".",
-                    ",",
-                    "\u200b",  # Zero-width space
-                    "\uff0c",  # Fullwidth comma
-                    "\u3001",  # Ideographic comma
-                    "\uff0e",  # Fullwidth full stop
-                    "\u3002",  # Ideographic full stop
-                    "",
-                ]
-            )
-
-            text_splitter_chunks = recursive_text_splitter.split_documents(pages)
-            final_chunks = {}
-            count_m = 0
-            for chunk in text_splitter_chunks:
-                count_m = count_m + 1
-                key = (file, count_m)
-                cleaned_chunk = chunk.page_content.replace("\n", "")
-                final_chunks[key] = cleaned_chunk
-                print(len(cleaned_chunk))
-                print(key)
-
-    with open('data/out/pkl/final_chunks.pkl', 'wb') as f:
-        pickle.dump(final_chunks, f)
 
 
 def semchunking(files):

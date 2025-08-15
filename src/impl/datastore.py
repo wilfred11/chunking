@@ -9,7 +9,6 @@ from src.interface.base_datastore import BaseDatastore, DataItem
 import lancedb
 from lancedb.table import Table
 import pyarrow as pa
-from openai import OpenAI
 from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
@@ -79,8 +78,6 @@ class Datastore(BaseDatastore):
         print("distance")
         print(results[0].get("_distance"))
         return results
-
-
 
     def _get_table(self) -> Table:
         try:
