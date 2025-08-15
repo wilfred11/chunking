@@ -87,32 +87,15 @@ def invoke_ai_json(system_message: str, context: str) -> str:
     return response.choices[0].message.content
 
 
-"""def invoke_ai_json(system_message: str, user_message: str) -> dict:
-    #mistralai/Mistral-Nemo-Instruct-2407
-    client = OpenAI(base_url="http://192.168.178.25:1234/v1", api_key="lm-studio")
+def process_query(self, query: str) -> str:
+    search_results = self.retriever.search(query)
+    print(f"✅ Found {len(search_results)} results for query: {query}\n")
 
-    stream = client.chat.completions.create(
-        # model="o4-mini",
-        model="gemma-1.1-2b-it",
-        messages=[
-            {"role": "system", "content": system_message},
-            {"role": "user", "content": user_message},
-        ],
-        format=Response.model_json_schema(),
-        stream=True
-    )
+    for i, result in enumerate(search_results):
+        print(f"🔍 Result {i + 1}: {result}\n")
 
-
-
-    data = ""
-    for x in stream:
-        delta = x['choices'][0]["delta"]["content"]
-        if delta is not None:
-            print(delta)
-            data += delta
-    return json.loads(data)
-"""
-
+    response = self.response_generator.generate_response(query, search_results)
+    return response
 
 def recursive_character_chunking(files):
     # need table extracting , camelot

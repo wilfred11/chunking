@@ -9,7 +9,7 @@ class DataItem(BaseModel):
     content: str = ""
     source: str = ""
     summary: str = ""
-    numbering: str = ""
+    number: int = -1
     summary_vector: str = ""
     question: str = ""
     answer: str = ""
@@ -25,7 +25,7 @@ class BaseDatastore(ABC):
         pass
 
     @abstractmethod
-    def search(self, query: str, top_k: int = 5) -> List[str]:
+    def search(self, query: str, top_k: int = 5) -> list[dict]:
         pass
 
     @abstractmethod

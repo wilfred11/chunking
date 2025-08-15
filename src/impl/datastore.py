@@ -31,9 +31,6 @@ class Datastore(BaseDatastore):
         #self.vector_dimensions = 1536
         self.vector_dimensions = 1024
         self.emb_model: SentenceTransformer = self._get_sentence_transformer()
-        #self.open_ai_client = OpenAI( api_key=os.environ.get("OPENAI_API_KEY"))
-        #self.open_ai_client = OpenAI(base_url=os.environ.get("LMSTUDIO_URL"), api_key=os.environ.get("LMSTUDIO_KEY"))
-
         self.vector_db = lancedb.connect(self.DB_PATH)
         self.table: Table = self._get_table()
 
@@ -52,7 +49,7 @@ class Datastore(BaseDatastore):
                 pa.field("content", pa.utf8()),
                 pa.field("source", pa.utf8()),
                 pa.field("summary", pa.utf8()),
-                pa.field("numbering", pa.utf8()),
+                pa.field("number", pa.utf8()),
                 pa.field("question", pa.utf8()),
                 pa.field("answer", pa.utf8())
             ]
@@ -60,41 +57,17 @@ class Datastore(BaseDatastore):
 
         self.vector_db.create_table(self.DB_TABLE_NAME, schema=schema)
         self.table = self.vector_db.open_table(self.DB_TABLE_NAME)
-        print(f"✅ Table Reset/Created: {self.DB_TABLE_NAME} in {self.DB_PATH}")
+        print(f"Table Reset/Created: {self.DB_TABLE_NAME} in {self.DB_PATH}")
         return self.table
 
-    """def get_vector(self, content: str) -> List[float]:
-
-        response = self.open_ai_client.embeddings.create(
-            input=content,
-            model="text-embedding-3-small",
-            dimensions=self.vector_dimensions,
-        )
-        embeddings = response.data[0].embedding
-        return embeddings"""
-
-    """def get_vector(self, content: str) -> List[float]:
-
-        response = self.open_ai_client.embeddings.create(
-            input=content,
-            #model="gte-large-gguf/gte-large.Q6_K.gguf",
-            model="Nomic-embed-text-v1.5-Embedding-GGUF/nomic-embed-text-v1.5.f16.gguf",
-            dimensions=self.vector_dimensions,
-        )
-        embeddings = response.data[0].embedding
-        return embeddings"""
-
     def get_vector(self, summary: str) -> List[float]:
-        #print(content)
-        print("length content")
+        print("length summary")
         print(len(summary))
         if not summary.strip():
             print("Attempted to get embedding for empty text.")
             return []
 
         embedding = self.emb_model.encode(summary)
-        #print(embedding.shape)
-        #print(type(embedding))
         l = embedding.tolist()
         #print(type(l))
         return l
@@ -108,17 +81,15 @@ class Datastore(BaseDatastore):
             "source"
         ).when_matched_update_all().when_not_matched_insert_all().execute(entries)
 
-    def search(self, query: str, top_k: int = 5) -> List[str]:
+    def search(self, query: str, top_k: int = 5) -> list[dict]:
         vector = self.get_vector(query)
         results = (
             self.table.search(vector)
-            .select(["content", "source"])
+            .select(["summary", "content","source", "question", "number"])
             .limit(top_k)
             .to_list()
         )
-
-        result_content = [result.get("content") for result in results]
-        return result_content
+        return results
 
     def _get_table(self) -> Table:
         try:
@@ -149,7 +120,7 @@ class Datastore(BaseDatastore):
             "content": item.content,
             "source": item.source,
             "summary": item.summary,
-            "numbering": item.numbering,
+            "number": item.number,
             "question": item.question,
             "answer": item.answer
         }
