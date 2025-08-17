@@ -224,8 +224,7 @@ def _evaluate(
 
     return response_content
 ```
-
-![qa.png](data/out/eval/qa.png)
+<img width="1790" height="168" alt="qa" src="https://github.com/user-attachments/assets/b4f21257-10c5-4a9d-9e3b-5ab395873151" />
 
 ### LM studio
 
