@@ -2,12 +2,11 @@ import json
 import pickle
 from typing import List
 from src.interface.base_generator import BaseGenerator
-from src.util import invoke_ai, invoke_ai_json, semchunking
+from src.util import invoke_ai, invoke_ai_json, semchunking, Record
 
 SYSTEM_PROMPT = """
-Use the provided context to provide a concise answer to the user's question.
+Use the provided context to provide a concise answer to the question.
 If you cannot find the answer in the context, say so. Do not make up information.
-Context:
 """
 
 SUMMARY_PROMPT = """
@@ -70,16 +69,17 @@ class Generator(BaseGenerator):
         """Generate a response using OpenAI's chat completion."""
         # Combine context into a single string
         context_text = "\n".join(context)
-        user_message = (
+        context_question = (
             f"<context>\n{context_text}\n</context>\n"
             f"<question>\n{query}\n</question>"
         )
-        return invoke_ai(system_message=SYSTEM_PROMPT, context=user_message)
+        return invoke_ai(system_message=SYSTEM_PROMPT, context=context_question)
+
 
     def generate_summary(self, context: str):
         return invoke_ai(system_message=SUMMARY_PROMPT, context=context)
 
     def generate_q_and_a(self, context: str):
-        return invoke_ai_json(system_message=QA_PROMPT, context=context)
+        return invoke_ai_json(system_message=QA_PROMPT, context=context, ret_object=Record.model_json_schema())
 
 

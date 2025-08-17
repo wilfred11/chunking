@@ -199,6 +199,32 @@ def _rerank(
 
 As there are multiple ways to do index searching, it would be interesting to adapt the vector search based on the cohere results.
 
+### Find an answer
+
+The chunks being retrieved when vector searching the LanceDB datastore are used to feed to the LLM together with the question, at this moment the LLM should be able to generate a correct answer, that is if the returned chunks are correct.
+
+### Evaluate an answer
+
+To get an answer the question, response and expected answer is send to the LLM for evaluation.
+It returns a json object containing two fields an is_correct field and a reasoning field. 
+
+```
+def _evaluate(
+        self, query: str, response: str, expected_answer: str
+) -> str:
+    context = f"""
+    <question>\n{query}\n</question>
+    <response>\n{response}\n</response>
+    <expected_answer>\n{expected_answer}\n</expected_answer>
+    """
+
+    response_content = invoke_ai_json(system_message=SYSTEM_PROMPT, context=context, ret_object=AnswerEvaluation.model_json_schema())
+
+    return response_content
+```
+
+![qa.png](data/out/eval/qa.png)
+
 ### LM studio
 
 LM studio is a good application to serve an LLM locally. 

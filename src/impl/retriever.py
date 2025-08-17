@@ -15,7 +15,7 @@ class Retriever(BaseRetriever):
     def search(self, query: str, top_k: int = 3) -> list[str]:
         search_results = self.datastore.search(query, top_k=top_k)
         reranked_results = self._rerank(query, search_results, top_k=top_k)
-        return reranked_results
+        return reranked_results[:1]
 
     def _rerank(
         self, query: str, search_results: list[dict], top_k: int = 10
@@ -31,5 +31,5 @@ class Retriever(BaseRetriever):
         )
 
         result_indices = [result.index for result in response.results]
-        print(f"Reranked Indices: {result_indices}")
+        #print(f"Reranked Indices: {result_indices}")
         return [search_results[i] for i in result_indices]

@@ -42,19 +42,22 @@ if do==3:
     datastore.to_csv()
 
 if do==4:
-    "Get most fitting chunks for every question"
-    with open("data/out/eval/qas.json", "r") as file:
-        qas = json.load(file)
+    with keep.running():
+        document_paths = get_files_in_directory(DEFAULT_SOURCE_PATH)
+        "Get most fitting chunks for every question"
+        with open("data/out/eval/qas1.json", "r") as file:
+            qas = json.load(file)
 
-    print(qas)
-    datastore = Datastore()
-    datastore.reset()
-    indexer = Indexer()
-    items = indexer.index()
-    datastore.add_items(items)
-    retriever = Retriever(datastore=datastore)
-    evaluator = Evaluator(retriever=retriever, q_and_as=qas)
-    evaluator.evaluate()
+        print(qas)
+        datastore = Datastore()
+        datastore.reset()
+        indexer = Indexer()
+        items = indexer.index()
+        datastore.add_items(items)
+        retriever = Retriever(datastore=datastore)
+        generator = Generator(document_paths)
+        evaluator = Evaluator(retriever=retriever, q_and_as=qas, generator=generator)
+        evaluator.evaluate()
 
 if do==5:
     datastore = Datastore()

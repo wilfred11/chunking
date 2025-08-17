@@ -8,16 +8,22 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pydantic import BaseModel
 from openai import OpenAI
+from pydantic_core.core_schema import JsonSchema
 from semchunk import semchunk
 from sentence_transformers import SentenceTransformer
 
-llm_url= os.environ.get("LMSTUDIO_URL")
-llm_api_key= os.environ.get("LMSTUDIO_KEY")
+llm_url = os.environ.get("LMSTUDIO_URL")
+llm_api_key = os.environ.get("LMSTUDIO_KEY")
 
 
 class Record(BaseModel):
     question: str
     answer: str
+
+
+class AnswerEvaluation(BaseModel):
+    is_correct: str
+    reasoning: str
 
 
 class Response(BaseModel):
@@ -57,13 +63,13 @@ def invoke_ai(system_message: str, context: str) -> str:
         #model="o4-mini",
         model="gemma-1.1-2b-it",
         messages=[
-            {"role": "system", "content": system_message+context},
+            {"role": "system", "content": system_message + context},
         ],
     )
     return response.choices[0].message.content
 
 
-def invoke_ai_json(system_message: str, context: str) -> str:
+def invoke_ai_json(system_message: str, context: str, ret_object: JsonSchema) -> str:
     """
     Generic function to invoke an AI model given a system message and context. The OpenAI response is a json object.
     """
@@ -71,10 +77,10 @@ def invoke_ai_json(system_message: str, context: str) -> str:
     response = client.chat.completions.create(
         model="gemma-1.1-2b-it",
         response_format={
-            "type":"json_schema",
-            "json_schema":{
+            "type": "json_schema",
+            "json_schema": {
                 "name": "output_schema",
-                "schema": Record.model_json_schema()
+                "schema": ret_object
             }
         },
         messages=[
@@ -96,21 +102,21 @@ def process_query(self, query: str) -> str:
 
 
 def semchunking(files):
-    final_chunks={}
+    final_chunks = {}
     for file in files:
         print(file)
         loader = PyPDFLoader(file, mode="single")
         pages = [page.page_content for page in loader.load()]
 
         chunker = semchunk.chunkerify('cl100k_base', 256)
-        chunks=chunker(pages[0].replace("\n",""))
+        chunks = chunker(pages[0].replace("\n", ""))
         chunk_number = 1
         for c in chunks:
             #print(c)
             print(len(c))
             key = (file, chunk_number)
             final_chunks[key] = c
-            chunk_number=chunk_number+1
+            chunk_number = chunk_number + 1
 
     with open('data/out/pkl/final_chunks_sl.pkl', 'wb') as f:
         pickle.dump(final_chunks, f)

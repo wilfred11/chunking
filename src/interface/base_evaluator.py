@@ -7,6 +7,8 @@ class EvaluationResult(BaseModel):
     question: str
     response: str
     expected_answer: str
+    chunk_nummber: int
+    source: str
     is_correct: bool
     reasoning: Optional[str] = None
 
