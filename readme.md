@@ -205,6 +205,18 @@ As there are multiple ways to do index searching, it would be interesting to ada
 
 The chunks being retrieved when vector searching the LanceDB datastore are used to feed to the LLM together with the question, at this moment the LLM should be able to generate a correct answer, that is if the returned chunks are correct.
 
+```
+def generate_response(self, query: str, context: List[str]) -> str:
+    """Generate a response using OpenAI's chat completion."""
+    # Combine context into a single string
+    context_text = "\n".join(context)
+    context_question = (
+        f"<context>\n{context_text}\n</context>\n"
+        f"<question>\n{query}\n</question>"
+    )
+    return invoke_ai(system_message=SYSTEM_PROMPT, context=context_question)
+```
+
 ### Evaluate an answer
 
 To get an answer the question, response and expected answer is send to the LLM for evaluation.
