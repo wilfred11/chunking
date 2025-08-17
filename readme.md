@@ -165,7 +165,9 @@ def search(self, query: str, top_k: int = 5) -> list[dict]:
 
 The result of this query can be seen in this table.
 
-![datastore_results_2.png](data/out/eval/datastore_results_2.png)
+<img width="1028" height="108" alt="datastore_results_2" src="https://github.com/user-attachments/assets/60f7da3c-fe3f-4342-a77a-2932aab09aa9" />
+
+
 
 One can also see that all of the results of the vector search are in the right pdf, but only one search result has the correct chunk number. But this result is the furthest away. 
 The distance says something about the semantic distance between the correct vectorized summary and the vectorized question.
