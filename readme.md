@@ -8,9 +8,6 @@ Some flaws still to tackle:
 
 - the input length of the SentenceTransformer is actuall too small to capture some of the longer summaaries.
 - there are PDFs containing tables, these should be extracted separately and saved like the chunks.
-- the response of the llm to the question is not yet completely implemented
-- also the llm should decide whether the answer is to be considered to be the correct answer to the question
-- the code still needs some attention
 
 ### Chunking
 
